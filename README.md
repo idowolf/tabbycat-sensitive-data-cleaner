@@ -15,7 +15,7 @@ Before running the automation scripts, you need to set up your environment and i
 You can install the required Python packages using pip:
 
 ```bash
-pip install selenium
+pip install -r requirements.txt
 ```
 
 ### Environment Variables
