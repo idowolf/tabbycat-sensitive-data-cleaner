@@ -1,13 +1,16 @@
+import sys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.chrome.service import Service
 import os
 
 admin_url = os.getenv('TABBYCAT_URL')
 username = os.getenv('TABBYCAT_ADMIN_USERNAME')
 password = os.getenv('TABBYCAT_ADMIN_PASSWORD')
+webdriver_path = os.getenv('WEBDRIVER_PATH')
 
 def construct_url(base_url, path):
     return f'{base_url.rstrip("/")}/{path.lstrip("/")}'
@@ -22,7 +25,18 @@ adjudicator_base_score_history_url = construct_url(admin_url, 'database/adjfeedb
 adjudicator_feedbacks_url = construct_url(admin_url, 'database/adjfeedback/adjudicatorfeedback/')
 users_url = construct_url(admin_url, 'database/auth/user/')
 
-driver = webdriver.Chrome()
+if webdriver_path is None:
+    print("Environment variable 'WEBDRIVER_PATH' not set. Exiting program.")
+    sys.exit(1)
+
+try:
+    service = Service(executable_path=webdriver_path)
+    driver = webdriver.Chrome(service=service)
+    print("Webdriver loaded successfully.")
+except Exception as e:
+    print(f"Failed to load webdriver: {e}")
+    sys.exit(1)
+
 
 def login():
     driver.get(login_url)
